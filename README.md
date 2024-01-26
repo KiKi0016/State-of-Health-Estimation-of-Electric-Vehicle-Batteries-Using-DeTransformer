@@ -12,6 +12,8 @@ pandas==2.1.1
 matplotlib==3.8.0
 h5py==3.10.0
 scipy==1.11.3
+tqdm==4.66.1
+tensorboardX==2.6.2.2
 ```
 
 
