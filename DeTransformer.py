@@ -188,7 +188,6 @@ def relative_positional_error(y_test, y_predict, threshold):
 def evaluation(y_test, y_predict):
     mse = mean_squared_error(y_test, y_predict)
     rmse = sqrt(mean_squared_error(y_test, y_predict))
-    #precision = precision_score(y_test, y_predict, average=None)
     return rmse
 
 
