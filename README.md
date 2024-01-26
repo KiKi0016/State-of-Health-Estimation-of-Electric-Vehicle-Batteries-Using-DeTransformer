@@ -28,6 +28,11 @@ This dataset was specifically curated to investigate the aging process of lithiu
 python DeTransformer.py
 ```
 
+### Test
+```
+python Test.py
+```
+
 
 # Visualisation
 We provide the drawing code about the prediction results in the visualisation folder to see more intuitively the performance of the DeTransformer model for SOH and RUL prediction of lithium batteries.
