@@ -37,7 +37,7 @@ python DeTransformer.py
 
 ### Test
 ```
-python Test.py
+python test.py
 ```
 
 
