@@ -5,12 +5,13 @@ Deep learning of lithium-ion battery SOH using the DeTransformer model learns th
 ### Dependencies
 ```
 python==3.10.12
+CUDA==11.8
+pytorch==2.1.0
 numpy==1.26.0
 pandas==2.1.1
 matplotlib==3.8.0
 h5py==3.10.0
-pytorch==2.1.0
-CUDA==11.8
+scipy==1.11.3
 ```
 
 
