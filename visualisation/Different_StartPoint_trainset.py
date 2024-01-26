@@ -34,7 +34,10 @@ predict_list = []
 
 for num in range(83):
     predict_list.append(pickle.load(open('Data/Transformer_15/predict_list_main_15_'+ str(num) +'.pkl', 'rb')))
-
+'''
+for num in range(84):
+    predict_list.append(pickle.load(open('Data/Transformer_15/predict_list_main_15_'+ str(num) +'.pkl', 'rb')))
+'''
 
 count = 0
 start_index = 81
