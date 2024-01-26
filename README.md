@@ -17,7 +17,11 @@ scipy==1.11.3
 
 # Dataset  
 
-We employed a publicly available dataset by Severson, Kristen A., et al. (2019) 'https://data.matr.io/1/projects/5c48dd2bc625d700019f3204', comprising 124 commercially available lithium-ion phosphate (LFP) cells/graphite batteries (A123 Systems, model APR18650M1A, 1.1 Ah nominal capacity). 
+We employed a publicly available dataset with the paper ['Data driven prediciton of battery cycle life before capacity degradation' by K.A. Severson, P.M. Attia, et al](https://www.nature.com/articles/s41560-019-0356-8). 
+
+The dataset are available at 'https://data.matr.io/1/projects/5c48dd2bc625d700019f3204'. 
+
+The dataset consists of 124 commercially available lithium-ion phosphate (LFP) cells/graphite batteries (A123 Systems, model APR18650M1A, 1.1 Ah nominal capacity). 
 
 This dataset was specifically curated to investigate the aging process of lithium-ion batteries under different fast charging conditions.
 
