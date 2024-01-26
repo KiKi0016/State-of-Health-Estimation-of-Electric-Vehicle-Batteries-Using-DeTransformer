@@ -17,7 +17,7 @@ scipy==1.11.3
 
 # Dataset  
 
-We employed a publicly available dataset with the paper ['Data driven prediciton of battery cycle life before capacity degradation' by K.A. Severson, P.M. Attia, et al](https://www.nature.com/articles/s41560-019-0356-8). 
+We employed a publicly available dataset from the paper ['Data driven prediciton of battery cycle life before capacity degradation' by K.A. Severson, P.M. Attia, et al](https://www.nature.com/articles/s41560-019-0356-8). 
 
 The dataset are available at 'https://data.matr.io/1/projects/5c48dd2bc625d700019f3204'. 
 
