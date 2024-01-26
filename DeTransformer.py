@@ -29,7 +29,8 @@ import copy
 # pylint: disable=arguments-differ
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
+print(device)
+#print(torch.__version__)
 
 
 # convert str to datatime 
@@ -94,11 +95,11 @@ def getBatteryCapacity(bat_dict, name):
     cycle, capacity = [], []
     capacity = bat_dict[name]['summary']['QD']
     if len(capacity) < 400:
-    # 计算需要填充的0的数量
+    # calculate the number of zeros to be filled
         padding_length = 400 - len(capacity)
-    # 使用 [0] * padding_length 创建一个包含0的列表
+    # create a list of 0's using [0] * padding_length
         padding = [0] * padding_length
-    # 将原始列表和0填充列表连接起来
+    # joins the original list to the 0-filled list
         #capacity = np.r_[capacity, padding]
     #print(len(capacity))
     
@@ -279,13 +280,13 @@ def train(lr=0.01, feature_size=8, hidden_dim=32, num_layers=1, nhead=8, weight_
          alpha=0.0, noise_level=0.0, dropout=0.0, metric='re', is_load_weights=True):
     score_list, result_list = [], []
     setup_seed(seed)
-    writer = SummaryWriter('Data/Log/Transformer15')
+    writer = SummaryWriter('Data/Log/DeTransformer')
     for i in range(84):
         name = Battery_list[i]
         window_size = feature_size
         train_x, train_y, train_data, test_data = get_train_test(Battery, name, window_size) #size:train_x=17,train_y=151,train_data=17,test_data=151
-        np.savetxt('Data/Transformer_15/train_data_main_15_' + str(i) + '.csv', train_data, delimiter=',')
-        np.savetxt('Data/Transformer_15/test_data_main_15_' + str(i) + '.csv', test_data, delimiter=',')
+        np.savetxt('Data/DeTransformer/train_data_main_' + str(i) + '.csv', train_data, delimiter=',')
+        np.savetxt('Data/DeTransformer/test_data_main_' + str(i) + '.csv', test_data, delimiter=',')
         train_size = len(train_x)
         print('sample size: {}'.format(train_size))
 
@@ -347,7 +348,7 @@ def train(lr=0.01, feature_size=8, hidden_dim=32, num_layers=1, nhead=8, weight_
                 score_ = score.copy()
                 model_ = copy.deepcopy(model)
                 # save model
-                torch.save(model_.state_dict(), 'Data/Transformer_15/Transformer_15_'+str(i)+'.pth')
+                torch.save(model_.state_dict(), 'Data/DeTransformer/DeTransformer_'+str(i)+'.pth')
             
             
             writer.add_scalars('Battery'+ str(i), {"Train Loss": loss,
@@ -357,13 +358,13 @@ def train(lr=0.01, feature_size=8, hidden_dim=32, num_layers=1, nhead=8, weight_
             
         print('------------------------------------------------------------------')
         print('Battery_list:{:<2d} | loss:{:<6.4f} | RPE:{:<6.4f} | RMSE:{:<6.4f} | MAE:{:<6.4f}'.format(i, loss, rpe, rmse, mae))
-        np.savetxt('Data/Transformer_15/predict_list_main_15_' + str(i) + '.csv', y_, delimiter=',')   
-        with open('Data/Transformer_15/predict_list_main_15_' + str(i) + '.pkl', 'wb') as fp:
+        np.savetxt('Data/DeTransformer/predict_list_main_' + str(i) + '.csv', y_, delimiter=',')   
+        with open('Data/DeTransformer/predict_list_main_' + str(i) + '.pkl', 'wb') as fp:
             pickle.dump(y_, fp)
         score_list.append(score_)
         result_list.append(y_[-2])
     writer.close()
-    torch.save(model_, 'Data/Transformer15.pkl')
+    torch.save(model_, 'Data/DeTransformer.pkl')
     return score_list, result_list, y_, loss_list
 
 
@@ -392,7 +393,7 @@ score_list, result_list, predict_list, loss_list= train(lr=lr, feature_size=feat
                       weight_decay=weight_decay, EPOCH=EPOCH, seed=seed, dropout=dropout, alpha=alpha, 
                       noise_level=noise_level, metric=metric, is_load_weights=is_load_weights)
 
-with open('Data/Transformer_15/predict_list_main_15.pkl', 'wb') as fp:
+with open('Data/DeTransformer/predict_list_main.pkl', 'wb') as fp:
             pickle.dump(result_list, fp)
 print(np.array(score_list))
 for s in score_list:
@@ -411,43 +412,56 @@ mean_mae = np.mean(np.array(SCORE_mae))
 mean_values = np.array([mean_rpe, mean_rmse, mean_mae])
 
 # Save the means to a CSV file
-np.savetxt('Data/Transformer_15/Transformer_15_Score.csv', mean_values, delimiter=',')
+np.savetxt('Data/DeTransformer/DeTransformer_Score.csv', mean_values, delimiter=',')
 
 '''
 Rated_Capacity = 1.1
 window_size = 16
 feature_size = window_size
 dropout = 0.0
-EPOCH = 2000
+EPOCH = 10000
 nhead = 8
+hidden_dim = 64
+num_layers = 1
+lr = 0.0
 is_load_weights = False
 
 weight_decay = 0.0
 noise_level = 0.0
 alpha = 0.0
-metric = 'rmse'
+metric = 'error'
+
 
 states = {}
-for lr in [1e-3, 1e-2]:
-    for num_layers in [1, 2]:
-        for hidden_dim in [16, 32]:
+for lr in np.arange(5e-3,3e-3,-1e-4):
+    for noise_level in np.arange (0.01,0.1,0.01):
+        for dropout in [0.5, 0.6]:
             for alpha in [1e-5, 1e-4]:
-                show_str = 'lr={}, num_layers={}, hidden_dim={}, alpha={}'.format(lr, num_layers, hidden_dim, alpha)
+                show_str = 'lr={}, noise_level={}, dropout={}, alpha={}'.format(lr, noise_level, dropout, alpha)
                 print(show_str)
-                SCORE = []
+                SCORE_rpe, SCORE_rmse, SCORE_mae  = [], [], []
                 for seed in range(5):
                     print('seed:{}'.format(seed))
-                    score_list, _, predict_list, loss_list= train(lr=lr, feature_size=feature_size, hidden_dim=hidden_dim, num_layers=num_layers, nhead=nhead, 
-                                                            weight_decay=weight_decay, EPOCH=EPOCH, seed=seed, dropout=dropout, alpha=alpha, 
-                                                            noise_level=noise_level, metric=metric, is_load_weights=is_load_weights)
+                    score_list, result_list, predict_list, loss_list= train(lr=lr, feature_size=feature_size, hidden_dim=hidden_dim, num_layers=num_layers, nhead=nhead, 
+                      weight_decay=weight_decay, EPOCH=EPOCH, seed=seed, dropout=dropout, alpha=alpha, 
+                      noise_level=noise_level, metric=metric, is_load_weights=is_load_weights)
                     print(np.array(score_list))
                     print(metric + ': {:<6.4f}'.format(np.mean(np.array(score_list))))
                     print('------------------------------------------------------------------')
                     for s in score_list:
-                        SCORE.append(s)
+                        SCORE_rpe.append(s[0])
+                        SCORE_rmse.append(s[1])
+                        SCORE_mae.append(s[2])
 
-                print(metric + ' mean: {:<6.4f}'.format(np.mean(np.array(SCORE))))
-                states[show_str] = np.mean(np.array(SCORE))
+                print('rpe mean:{:<6.4f} | rmse mean:{:<6.4f} | mae mean:{:<6.4f}'.format(np.mean(np.array(SCORE_rpe)), np.mean(np.array(SCORE_rmse)), np.mean(np.array(SCORE_mae))))
+                # Calculate the means
+                mean_rpe = np.mean(np.array(SCORE_rpe))
+                mean_rmse = np.mean(np.array(SCORE_rmse))
+                mean_mae = np.mean(np.array(SCORE_mae))
+
+                # Stack the means into a single array
+                mean_values = np.array([mean_rpe, mean_rmse, mean_mae])
+                states[show_str] = np.mean(np.array(mean_values))
                 print('===================================================================')
 
 min_key = min(states, key = states.get)
