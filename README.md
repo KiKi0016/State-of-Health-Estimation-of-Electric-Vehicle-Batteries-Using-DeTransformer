@@ -27,8 +27,10 @@ The dataset consists of 124 commercially available lithium-ion phosphate (LFP) c
 
 This dataset was specifically curated to investigate the aging process of lithium-ion batteries under different fast charging conditions.
 
+The dataset folder provides calculation codes for calculating SOH based on battery SOC.
 
-# Train
+
+# Experiment
 
 ### Training
 ```
