@@ -22,6 +22,7 @@ tensorboardX==2.6.2.2
 We employed a publicly available dataset from the paper ['Data driven prediciton of battery cycle life before capacity degradation' by K.A. Severson, P.M. Attia, et al](https://www.nature.com/articles/s41560-019-0356-8). 
 
 The dataset are available at ['TOYOTA RESEARCH INSTITUTE'](https://data.matr.io/1/projects/5c48dd2bc625d700019f3204). 
+
 -'2017-05-12_batchdata_updated_struct_errorcorrect.mat'
 -'2017-06-30_batchdata_updated_struct_errorcorrect.mat'
 -'2018-04-12_batchdata_updated_struct_errorcorrect.mat'
